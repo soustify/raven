@@ -9,6 +9,19 @@ import (
 	"github.com/soustify/raven/pkg/validators"
 )
 
+func TransformeResult(c *fiber.Ctx) error {
+	statusCode := c.Response().StatusCode()
+	body := c.Response().Body()
+	var result interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
+		return err
+	}
+	return c.Status(statusCode).JSON(&response.Result{
+		Code:    statusCode,
+		Content: result,
+	})
+}
+
 func ValidationMiddleware[T validators.Validatable](c *fiber.Ctx) error {
 	err := c.Next()
 	if err != nil {
@@ -21,7 +34,7 @@ func ValidationMiddleware[T validators.Validatable](c *fiber.Ctx) error {
 	var result interface{}
 
 	if statusCode == fiber.StatusNoContent {
-		return defaultResponse(c, "", statusCode)
+		return nil
 	}
 
 	if statusCode == fiber.StatusOK || statusCode == fiber.StatusCreated {
@@ -45,7 +58,7 @@ func ValidationMiddleware[T validators.Validatable](c *fiber.Ctx) error {
 		}
 	}
 
-	return defaultResponse(c, result, statusCode)
+	return nil
 }
 
 // Valida e responde se o corpo da resposta é uma lista
@@ -91,12 +104,4 @@ func isJSONArray(jsonStr string) (bool, error) {
 	default:
 		return false, fmt.Errorf("invalid json format")
 	}
-}
-
-// Retorna a resposta padrão
-func defaultResponse(c *fiber.Ctx, body interface{}, statusCode int) error {
-	return c.Status(statusCode).JSON(&response.Result{
-		Code:    statusCode,
-		Content: body,
-	})
 }
