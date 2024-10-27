@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
 	"github.com/soustify/raven/pkg/response"
 	"github.com/soustify/raven/pkg/validators"
 )
@@ -54,8 +55,9 @@ func validateAndRespondList[T validators.Validatable](body []byte) ([]T, error) 
 		return nil, nil
 	}
 
-	for _, item := range outputList {
+	for index, item := range outputList {
 		if validationErr := item.Validate(); validationErr != nil {
+			logrus.WithField("index", index).Errorf("error to validate index: %v error: %v", item, validationErr)
 			return nil, fiber.NewError(fiber.StatusInternalServerError, validationErr.Error())
 		}
 	}
@@ -66,9 +68,11 @@ func validateAndRespondList[T validators.Validatable](body []byte) ([]T, error) 
 func validateAndRespondSingle[T validators.Validatable](body []byte) (*T, error) {
 	var output T
 	if err := json.Unmarshal(body, &output); err != nil {
+		logrus.Errorf("error to decode json: %v", err)
 		return nil, fiber.NewError(fiber.StatusInternalServerError, "Erro ao processar a resposta")
 	}
 	if validationErr := output.Validate(); validationErr != nil {
+		logrus.Errorf("error to validate error: %v", validationErr)
 		return nil, fiber.NewError(fiber.StatusInternalServerError, validationErr.Error())
 	}
 	return &output, nil
