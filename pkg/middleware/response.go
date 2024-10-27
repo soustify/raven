@@ -10,6 +10,20 @@ import (
 )
 
 func TransformeResult(c *fiber.Ctx) error {
+	err := c.Next()
+	if err != nil {
+		if e, ok := err.(*fiber.Error); ok {
+			return c.Status(e.Code).JSON(&response.Result{
+				Code:    e.Code,
+				Content: response.StringResult{Message: e.Message},
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(&response.Result{
+			Code:    fiber.StatusInternalServerError,
+			Content: response.StringResult{Message: "Erro interno do servidor"},
+		})
+	}
+
 	statusCode := c.Response().StatusCode()
 	body := c.Response().Body()
 	var result interface{}
