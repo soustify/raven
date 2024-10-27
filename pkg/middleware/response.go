@@ -31,8 +31,6 @@ func ValidationMiddleware[T validators.Validatable](c *fiber.Ctx) error {
 	statusCode := c.Response().StatusCode()
 	body := c.Response().Body()
 
-	var result interface{}
-
 	if statusCode == fiber.StatusNoContent {
 		return nil
 	}
@@ -42,19 +40,15 @@ func ValidationMiddleware[T validators.Validatable](c *fiber.Ctx) error {
 		if err != nil {
 			return err
 		} else if isArray {
-			result, err = validateAndRespondList[T](body)
+			_, err = validateAndRespondList[T](body)
 			if err != nil {
 				return err
 			}
 		} else {
-			result, err = validateAndRespondSingle[T](body)
+			_, err = validateAndRespondSingle[T](body)
 			if err != nil {
 				return err
 			}
-		}
-	} else {
-		if err := json.Unmarshal(body, &result); err != nil {
-			return err
 		}
 	}
 
