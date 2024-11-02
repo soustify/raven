@@ -16,42 +16,27 @@ type (
 )
 
 func NewError(ctx *fiber.Ctx, err error) error {
-	return ctx.Status(fiber.StatusInternalServerError).JSON(&Result{
-		Code: fiber.StatusInternalServerError,
-		Content: StringResult{
-			Message: err.Error(),
-		},
+	return ctx.Status(fiber.StatusInternalServerError).JSON(&StringResult{
+		Message: err.Error(),
 	})
 }
 
 func NewBadRequestError(ctx *fiber.Ctx, err error) error {
-	return ctx.Status(fiber.StatusBadRequest).JSON(&Result{
-		Code: fiber.StatusBadRequest,
-		Content: StringResult{
-			Message: err.Error(),
-		},
+	return ctx.Status(fiber.StatusBadRequest).JSON(&StringResult{
+		Message: err.Error(),
 	})
 }
 
 func NewSuccess(ctx *fiber.Ctx, value interface{}) error {
-	return ctx.Status(fiber.StatusOK).JSON(&Result{
-		Code:    fiber.StatusOK,
-		Content: value,
-	})
+	return ctx.Status(fiber.StatusOK).JSON(value)
 }
 
 func NewCreated(ctx *fiber.Ctx, value interface{}) error {
-	return ctx.Status(fiber.StatusCreated).JSON(&Result{
-		Code:    fiber.StatusCreated,
-		Content: value,
-	})
+	return ctx.Status(fiber.StatusCreated).JSON(value)
 }
 
 func NewAccepted(ctx *fiber.Ctx, value interface{}) error {
-	return ctx.Status(fiber.StatusAccepted).JSON(&Result{
-		Code:    fiber.StatusAccepted,
-		Content: value,
-	})
+	return ctx.Status(fiber.StatusAccepted).JSON(value)
 }
 
 func NewNoContent(ctx *fiber.Ctx) error {
