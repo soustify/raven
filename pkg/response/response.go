@@ -42,3 +42,7 @@ func NewNotFound(ctx *fiber.Ctx, message string) error {
 func NewUnprocessable(ctx *fiber.Ctx, message string) error {
 	return ctx.Status(fiber.StatusUnprocessableEntity).JSON(message)
 }
+
+func NewConflict(ctx *fiber.Ctx, message string) error {
+	return ctx.Status(fiber.StatusConflict).JSON(message)
+}
