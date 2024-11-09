@@ -7,3 +7,7 @@ type ValidationOutputMiddleware[T Validatable] func(c *fiber.Ctx) error
 type Validatable interface {
 	Validate() error
 }
+
+type Toggleable interface {
+	Validatable
+}
