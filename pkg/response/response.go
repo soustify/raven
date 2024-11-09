@@ -32,5 +32,5 @@ func NewAccepted(ctx *fiber.Ctx, value interface{}) error {
 }
 
 func NewNoContent(ctx *fiber.Ctx) error {
-	return ctx.Status(fiber.StatusNoContent)
+	return ctx.SendStatus(fiber.StatusNoContent)
 }

@@ -15,12 +15,12 @@ func TransformeResult(c *fiber.Ctx) error {
 		if e, ok := err.(*fiber.Error); ok {
 			return c.Status(e.Code).JSON(&response.Result{
 				Code:    e.Code,
-				Content: response.StringResult{Message: e.Message},
+				Content: e.Message,
 			})
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(&response.Result{
 			Code:    fiber.StatusInternalServerError,
-			Content: response.StringResult{Message: "Erro interno do servidor"},
+			Content: "Erro interno do servidor",
 		})
 	}
 
