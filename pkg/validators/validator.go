@@ -10,4 +10,5 @@ type Validatable interface {
 
 type Toggleable interface {
 	Validatable
+	IsEnabled() bool
 }
