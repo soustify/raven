@@ -34,3 +34,7 @@ func NewAccepted(ctx *fiber.Ctx, value interface{}) error {
 func NewNoContent(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusNoContent)
 }
+
+func NotFound(ctx *fiber.Ctx, message string) error {
+	return ctx.Status(fiber.StatusOK).JSON(message)
+}
