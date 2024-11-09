@@ -35,6 +35,10 @@ func NewNoContent(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusNoContent)
 }
 
-func NotFound(ctx *fiber.Ctx, message string) error {
-	return ctx.Status(fiber.StatusOK).JSON(message)
+func NewNotFound(ctx *fiber.Ctx, message string) error {
+	return ctx.Status(fiber.StatusNotFound).JSON(message)
+}
+
+func NewUnprocessable(ctx *fiber.Ctx, message string) error {
+	return ctx.Status(fiber.StatusUnprocessableEntity).JSON(message)
 }
