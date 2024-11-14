@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/soustify/raven/pkg/response"
 	"github.com/soustify/raven/pkg/validators"
+	"net/http"
 )
 
 func TransformeResult(c *fiber.Ctx) error {
@@ -25,6 +26,11 @@ func TransformeResult(c *fiber.Ctx) error {
 	}
 
 	statusCode := c.Response().StatusCode()
+	if statusCode == http.StatusNoContent {
+		return c.Status(statusCode).JSON(&response.Result{
+			Code: statusCode,
+		})
+	}
 	body := c.Response().Body()
 	var result interface{}
 	if err := json.Unmarshal(body, &result); err != nil {
