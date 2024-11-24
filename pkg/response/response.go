@@ -50,3 +50,7 @@ func NewUnprocessable(ctx *fiber.Ctx, message string) error {
 func NewConflict(ctx *fiber.Ctx, message string) error {
 	return ctx.Status(fiber.StatusConflict).JSON(message)
 }
+
+func NewUnauthorizedError(ctx *fiber.Ctx, message string) error {
+	return ctx.Status(fiber.StatusConflict).JSON(message)
+}
