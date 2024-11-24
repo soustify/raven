@@ -52,5 +52,5 @@ func NewConflict(ctx *fiber.Ctx, message string) error {
 }
 
 func NewUnauthorizedError(ctx *fiber.Ctx, message string) error {
-	return ctx.Status(fiber.StatusConflict).JSON(message)
+	return ctx.Status(fiber.StatusUnauthorized).JSON(message)
 }
