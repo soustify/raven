@@ -6,23 +6,24 @@ import (
 	"strconv"
 )
 
-func GetPageNumber(context *fiber.Ctx) int64 {
-	page := context.Query("pageNumber", "1")
-	intValue, err := strconv.Atoi(page)
+func getNumberFromQuery(context *fiber.Ctx, name string, defVal int) int {
+	property := context.Query(name, "")
+	if property == "" {
+		return defVal
+	}
+	intValue, err := strconv.Atoi(property)
 	if err != nil {
 		logrus.Warn(err)
 		return 1
 	}
-	return int64(intValue)
+	return intValue
 
 }
 
-func GetPageSize(context *fiber.Ctx) int64 {
-	page := context.Query("pageSize", "10")
-	intValue, err := strconv.Atoi(page)
-	if err != nil {
-		logrus.Warn(err)
-		return 10
-	}
-	return int64(intValue)
+func GetPageNumber(context *fiber.Ctx) int {
+	return getNumberFromQuery(context, "pageNumber", 1)
+}
+
+func GetPageSize(context *fiber.Ctx) int {
+	return getNumberFromQuery(context, "pageSize", 10)
 }
