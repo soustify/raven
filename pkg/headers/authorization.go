@@ -1,7 +1,9 @@
 package headers
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/soustify/raven/pkg/response"
 )
 
@@ -26,4 +28,22 @@ func GetBearerToken(ctx *fiber.Ctx) (string, error) {
 	}
 
 	return authHeader[7:], nil
+}
+
+func GetJwtClaims(ctx *fiber.Ctx) (jwt.MapClaims, error) {
+	tokenString, err := GetBearerToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	token, _, err := jwt.NewParser().ParseUnverified(tokenString, jwt.MapClaims{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse token: %v", err)
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		return claims, nil
+	} else {
+		return nil, fmt.Errorf("failed to extract claims from token")
+	}
 }
