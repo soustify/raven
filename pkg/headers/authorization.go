@@ -36,6 +36,10 @@ func GetJwtClaims(ctx *fiber.Ctx) (jwt.MapClaims, error) {
 		return nil, err
 	}
 
+	if tokenString == "" {
+		return nil, response.NewUnauthorizedError(ctx, "Invalid Authorization header token is not found")
+	}
+
 	token, _, err := jwt.NewParser().ParseUnverified(tokenString, jwt.MapClaims{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse token: %v", err)
