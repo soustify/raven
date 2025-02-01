@@ -1,10 +1,13 @@
 package headers
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/sirupsen/logrus"
 	"github.com/soustify/raven/pkg/response"
+	"strconv"
 )
 
 func GetAuthorization(ctx *fiber.Ctx) (string, error) {
@@ -50,4 +53,46 @@ func GetJwtClaims(ctx *fiber.Ctx) (jwt.MapClaims, error) {
 	} else {
 		return nil, fmt.Errorf("failed to extract claims from token")
 	}
+}
+
+func IsAuthenticated(ctx *fiber.Ctx) (bool, string) {
+	authUser := ctx.Get("X-authenticated-user")
+	if authUser == "" {
+		return false, ""
+	}
+	return true, authUser
+}
+
+func GetExpires(ctx *fiber.Ctx) (bool, int64) {
+	expires := ctx.Get("X-expires")
+	if expires == "" {
+		return false, 0
+	}
+	val, err := strconv.Atoi(expires)
+	if err != nil {
+		logrus.Warn("error parsing expires")
+		return false, 0
+	}
+	return true, int64(val)
+}
+
+func GetUserPool(ctx *fiber.Ctx) (bool, string) {
+	userPool := ctx.Get("X-user-pool")
+	if userPool == "" {
+		return false, ""
+	}
+	return true, userPool
+}
+
+func GetAuthorities(ctx *fiber.Ctx) (bool, string) {
+	authorities := ctx.Get("X-hash-authorities")
+	if authorities == "" {
+		return false, ""
+	}
+	decodedBytes, err := base64.StdEncoding.DecodeString(authorities)
+	if err != nil {
+		fmt.Println("Erro ao decodificar:", err)
+		return false, ""
+	}
+	return true, string(decodedBytes)
 }
